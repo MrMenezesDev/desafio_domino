@@ -1,5 +1,5 @@
 from json import load
-from typing import List, Dict
+from typing import List, Dict, Optional
 from enum import Enum
 
 class NomePeca(Enum):
@@ -24,7 +24,7 @@ class Peca:
         self.isBucha = self.peca[0] == self.peca[-1]
 
     def get_lado(self, lado: Lado) -> int:
-        if lado == Lado.esquerda:
+        if lado == Lado.direita:
             return self.peca[0] if self.order else self.peca[-1]
         return self.peca[-1] if self.order else self.peca[0]
 
@@ -138,7 +138,7 @@ class Jogada:
     def to_dict(self) -> Dict[str, str]:
         return {
             'pedra': self.peca.get_str(),
-            'lado': self.lado,
+            'lado': self.lado.name,
         }
 
 class Domino:
@@ -152,6 +152,26 @@ class Domino:
         self.mao = mao
         self.mesa = mesa
         self.jogadas = jogadas
+
+    def get_jogadas(self) -> Optional[List[Jogada]]:
+        esq = self.mesa[0].get_lado(Lado.esquerda)
+        dir = self.mesa[-1].get_lado(Lado.direita)
+        print(esq, dir)
+        pecas = self.mao.filter(esq) if esq == dir else self.mao.filter(esq) + self.mao.filter(dir)
+        data =[]
+        for peca in pecas:
+            print(peca)
+            if esq in peca:
+                data.append(Jogada(peca, Lado.esquerda, self.jogador))
+            if dir in peca:
+                data.append(Jogada(peca, Lado.direita, self.jogador))
+
+        if len(pecas) == 0:
+            return None
+        
+        return data
+       
+       
 
     @classmethod
     def from_json(cls, json_str: str |dict) -> 'Domino':
