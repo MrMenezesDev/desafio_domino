@@ -23,6 +23,9 @@ class Peca:
         self.peca.sort()
         self.isBucha = self.peca[0] == self.peca[-1]
 
+    def get_tamanho(self)-> int:
+        return self.peca[0] + self.peca[-1]
+
     def get_lado(self, lado: Lado) -> int:
         if lado == Lado.direita:
             return self.peca[0] if self.order else self.peca[-1]
@@ -129,6 +132,9 @@ class Jogada:
     peca: Peca
     lado: Lado | None
     jogador: int
+
+    def get_tamanho(self)-> int:
+        return self.peca.get_tamanho()
 
     def __init__(self, peca: Peca, lado: str, jogador: int):
         self.peca = peca
